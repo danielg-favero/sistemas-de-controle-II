@@ -1,6 +1,9 @@
 
 % Gráfico do primeiro ensaio
-%stackedplot(PrimeiraSimulacao)
+% TODO:
+% - Plotar os dois gráficos juntos
+% - Indexar de forma correta os dados da simulção
+stackedplot(PrimeiraSimulacao)
 
 % Converter Joules em Kcal
 Kph = 2.39 * 10^-4;
@@ -21,5 +24,7 @@ num = Kcc;
 den = [1680 1];
 G = tf(num, den);
 
-step(30.2 * (30.2 / 16.129) * Kph * G)
-
+hold
+[y, t] = step((30.2^2/16.129) * Kph * G)
+figure
+plot(t, y)
