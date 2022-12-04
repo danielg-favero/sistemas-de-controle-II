@@ -1,4 +1,3 @@
-
 % Gráfico do primeiro ensaio
 % TODO:
 % - Plotar os dois gráficos juntos

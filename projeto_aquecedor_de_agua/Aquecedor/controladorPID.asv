@@ -1,0 +1,51 @@
+
+clear
+close all
+clc
+
+% Definindo s como função de transferência
+s = tf('s');
+
+% Dados
+num = 4899.2;
+den = [2153 1];
+G = tf(num, den); % função de transferência
+K_ph = 2.39 * 10^-4;
+Kcciclos = 1349.8;
+Ksensor = 0.1;
+R = 16.129;
+P = 127^2 / R;
+G_planta = 30.2 * G * K_ph * P * Kcciclos * Ksensor;
+Gmf = feedback(G_planta, Kcciclos);    
+
+p = pole(30.2 * G);
+damp = 1;
+set_time = 225;
+desired_pole = -4 / set_time;
+
+% Encontrando valor do zero do integrador
+G_pi = (s - p) / s;
+v_abs = abs(evalfr( G_pi , desired_pole))
+ang_zi = abs(rad2deg(angle(evalfr(G_pi, desired_pole))))
+
+K = 1 / abs(evalfr(G_planta * G_pi, desired_pole));
+
+K_pd = 1;
+
+T_i = -p;
+C = K_pd * K * G_pi;
+[numC, denC] = tfdata(C, 'v');
+G_c = minreal(G_planta * C);
+rlocus(feedback(G_c, 1))
+figure()
+step(30.2 * G)
+figure()
+step(feedback(G_c, 1))
+
+% Definindo os valores dos componentes do circuito
+C_1 = 1 * 10^-6; % valor escolhido para o projeto
+C_2 = 1 * 10^-6;
+R_1 = 50 * 10^3;
+R_2 = T_i / C_2;
+R_3 = 50 * 10^3;
+R_4 = K * K_pd * R_1 * R_3 / R_2;
